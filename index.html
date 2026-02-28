@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NBC Loading Question Solver</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header>
+        <h1>NBC 2020 Loading Question Solver</h1>
+        <p>
+          Default view only includes the core inputs you requested. Open the optional section if you need to override
+          any secondary variables.
+        </p>
+      </header>
+
+      <section class="card">
+        <h2>Input Variables</h2>
+
+        <form id="solver-form" class="grid">
+          <label>Building length, L (m)<input name="L" type="number" step="0.01" value="24" /></label>
+          <label>Building width, w (m)<input name="w" type="number" step="0.01" value="18" /></label>
+          <label>Bay spacing X (m)<input name="bayX" type="number" step="0.01" value="6" /></label>
+          <label>Bay spacing Y (m)<input name="bayY" type="number" step="0.01" value="4.5" /></label>
+          <label>Elastic modulus, E (kN/mm²)<input name="E" type="number" step="0.01" value="200" /></label>
+          <label>Moment of inertia, I (mm⁴)<input name="I" type="number" step="1" value="102000000" /></label>
+
+          <details class="advanced" id="advanced-inputs">
+            <summary>Optional: change extra variables</summary>
+            <div class="advanced-grid">
+              <label>Ground snow, Ss (kPa)<input name="Ss" type="number" step="0.01" value="3" /></label>
+              <label>Rain load, Sr (kPa)<input name="Sr" type="number" step="0.01" value="0.1" /></label>
+              <label>Importance factor, Is<input name="Is" type="number" step="0.01" value="1" /></label>
+              <label>Wind exposure factor, Cw<input name="Cw" type="number" step="0.01" value="1" /></label>
+              <label>Basic roof snow factor, Cb<input name="Cb" type="number" step="0.01" value="0.8" /></label>
+              <label>Accumulation factor, Ca<input name="Ca" type="number" step="0.01" value="1" /></label>
+              <label>Slope factor, Cs<input name="Cs" type="number" step="0.01" value="1" /></label>
+              <label>Specified dead load, wD (kPa)<input name="wD" type="number" step="0.01" value="1.35" /></label>
+              <label>Beam span, Lb (m)<input name="Lb" type="number" step="0.01" value="4.5" /></label>
+              <label>Load location from support, a (m)<input name="a" type="number" step="0.01" value="1.5" /></label>
+              <label>Joist tributary width for one side (m)<input name="joistTrib" type="number" step="0.01" value="3" /></label>
+              <label>Joist spacing to beam point (m)<input name="joistSpacing" type="number" step="0.01" value="1.5" /></label>
+              <label>SLS snow factor, Is,sls<input name="IsSls" type="number" step="0.01" value="0.9" /></label>
+            </div>
+          </details>
+        </form>
+
+        <div class="actions">
+          <button id="solve" type="button">Solve</button>
+          <button id="reset" type="button" class="secondary">Reset defaults</button>
+        </div>
+      </section>
+
+      <section class="card" id="results"></section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

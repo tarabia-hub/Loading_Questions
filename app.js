@@ -90,46 +90,64 @@ function solve(data) {
 function render(data, r) {
   results.innerHTML = `
     <h2>Results</h2>
-    <p class="small">Formulas follow the same structure used in your uploaded solution sheets.</p>
+    <p class="small">Tabulated outputs are shown first. Expand each step only when you need to verify the calculations.</p>
 
-    <h3>a) Roof snow load (NBC 2020 format)</h3>
-    <pre>Lc = 2w - w²/L = ${f(r.Lc)} m,  compare with 70/Cw² = ${f(r.LcLimit)} m
+    <table class="table">
+      <thead>
+        <tr><th>Item</th><th>Result</th><th>Unit</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Roof snow load, Ws</td><td>${f(r.Ws)}</td><td>kPa</td></tr>
+        <tr><td>Roof design load (governing)</td><td>${f(r.governingRoof)}</td><td>kPa</td></tr>
+        <tr><td>Column A axial load</td><td>${f(r.columnA)}</td><td>kN</td></tr>
+        <tr><td>Column B axial load</td><td>${f(r.columnB)}</td><td>kN</td></tr>
+        <tr><td>Beam point load, Pf (each)</td><td>${f(r.Pf)}</td><td>kN</td></tr>
+        <tr><td>Beam max shear, Vmax</td><td>${f(r.Vmax)}</td><td>kN</td></tr>
+        <tr><td>Beam max moment, Mmax</td><td>${f(r.Mmax)}</td><td>kN·m</td></tr>
+        <tr><td>Deflection (virtual work)</td><td>${f(r.deltaVirtual, 2)}</td><td>mm</td></tr>
+        <tr><td>Deflection (equivalent UDL)</td><td>${f(r.deltaApprox, 2)}</td><td>mm</td></tr>
+      </tbody>
+    </table>
+
+    <details class="calc-block">
+      <summary>a) Roof snow load step-by-step</summary>
+      <pre>Lc = 2w - w²/L = ${f(r.Lc)} m, compare with 70/Cw² = ${f(r.LcLimit)} m
 Ws = Is[Ss(Cb·Cw·Cs·Ca) + Sr]
    = ${f(data.Is)}[${f(data.Ss)}(${f(data.Cb)}·${f(data.Cw)}·${f(data.Cs)}·${f(data.Ca)}) + ${f(data.Sr)}]
    = ${f(r.Ws)} kPa</pre>
+    </details>
 
-    <h3>b) Governing factored roof load under D and S</h3>
-    <table class="table">
-      <tr><th>Combination</th><th>Value (kPa)</th></tr>
-      <tr><td>1.4D</td><td>${f(r.combo14D)} </td></tr>
-      <tr><td>1.25D + 1.5S</td><td>${f(r.combo125D15S)} </td></tr>
-      <tr><td><strong>Governing</strong></td><td><strong>${f(r.governingRoof)}</strong></td></tr>
-    </table>
+    <details class="calc-block">
+      <summary>b) Governing factored load step-by-step</summary>
+      <pre>1.4D = 1.4(${f(data.wD)}) = ${f(r.combo14D)} kPa
+1.25D + 1.5S = 1.25(${f(data.wD)}) + 1.5(${f(r.Ws)}) = ${f(r.combo125D15S)} kPa
+Governing load = max(1.4D, 1.25D + 1.5S) = ${f(r.governingRoof)} kPa</pre>
+    </details>
 
-    <h3>c) Column axial loads under 1.25D + 1.5S</h3>
-    <pre>Column A tributary area = ${f(data.bayX)} × ${f(data.bayY)} = ${f(r.areaA)} m²
+    <details class="calc-block">
+      <summary>c) Column loads step-by-step</summary>
+      <pre>AreaA = bayX × bayY = ${f(data.bayX)} × ${f(data.bayY)} = ${f(r.areaA)} m²
 Cf,A = AreaA(1.25wD + 1.5Ws) = ${f(r.columnA)} kN
 
-Column B tributary area = (${f(data.bayX)}/2) × (${f(data.bayY)}/2) = ${f(r.areaB)} m²
+AreaB = (bayX/2) × (bayY/2) = ${f(r.areaB)} m²
 Cf,B = AreaB(1.25wD + 1.5Ws) = ${f(r.columnB)} kN</pre>
+    </details>
 
-    <h3>d) Beam actions (same method as shown)</h3>
-    <pre>Pf = 2[(1.25wD)+(1.5Ws)](joistTrib)(joistSpacing)
+    <details class="calc-block">
+      <summary>d) Beam shear & moment step-by-step</summary>
+      <pre>Pf = 2[(1.25wD)+(1.5Ws)](joistTrib)(joistSpacing)
    = ${f(r.Pf)} kN (each point load)
-
-For two symmetric point loads at distance a from supports:
 Vmax = Pf = ${f(r.Vmax)} kN
 Mmax = Pf·a = ${f(r.Mmax)} kN·m</pre>
+    </details>
 
-    <h3>e) Beam deflection under snow only</h3>
-    <pre>Ps = 2Ws(joistTrib)(joistSpacing)Is,sls = ${f(r.Ps)} kN (each snow-only point load)
-
-Virtual-work expression (as in provided sheet):
-δmax = 23PsL³/(27·24·E·I) = ${f(r.deltaVirtual, 2)} mm
-
-Approximate equivalent UDL method:
-qeq = (total point loads)/L = 2Ps/L = ${f(r.qeq, 2)} kN/m
-δmax = 5qeqL⁴/(384EI) = ${f(r.deltaApprox, 2)} mm</pre>
+    <details class="calc-block">
+      <summary>e) Deflection step-by-step</summary>
+      <pre>Ps = 2Ws(joistTrib)(joistSpacing)Is,sls = ${f(r.Ps)} kN
+δmax (virtual work) = 23PsL³/(27·24·E·I) = ${f(r.deltaVirtual, 2)} mm
+qeq = 2Ps/L = ${f(r.qeq, 2)} kN/m
+δmax (equivalent UDL) = 5qeqL⁴/(384EI) = ${f(r.deltaApprox, 2)} mm</pre>
+    </details>
   `;
 }
 
@@ -144,6 +162,7 @@ document.getElementById('reset').addEventListener('click', () => {
   Object.entries(defaults).forEach(([k, v]) => {
     form.elements[k].value = v;
   });
+  document.getElementById('advanced-inputs').open = false;
   run();
 });
 

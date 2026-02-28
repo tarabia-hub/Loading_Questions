@@ -30,3 +30,10 @@ Then open/forward `http://localhost:4173` and the preview tab should appear.
 - Snow-load deflection using:
   - virtual-work expression used in the solution sheet
   - approximate equivalent UDL method
+
+
+## UI behavior
+
+- Primary inputs shown by default: `L`, `w`, `bayX`, `bayY`, `E`, `I`.
+- Optional parameters are hidden under **Optional: change extra variables** and can be expanded only when needed.
+- Results are shown in a summary table, with step-by-step derivations inside collapsible sections.
